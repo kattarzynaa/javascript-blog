@@ -38,16 +38,17 @@
 
     /* [DONE] get 'href' attribute from the clicked link */
 
-    
-
     const hrefValue = clickedElement.getAttribute("href");
-
     console.log('href: ', hrefValue);
 
-    /* [IN PROGRESS] find the correct article using the selector (value of 'href' atribute) */
+    /* [DONE] find the correct article using the selector (value of 'href' atribute) */
 
-    /* add class 'active' to the correct article */
-
+    const articleClicked = document.querySelector(hrefValue);
+    
+    /* [DONE] add class 'active' to the correct article */
+    
+        articleClicked.classList.add('active');
+    
     }
   
   const links = document.querySelectorAll('.titles a');
