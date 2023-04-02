@@ -1,5 +1,13 @@
 'use strict';
 
+const templates = {
+  articleLink: Handlebars.compile(document.querySelector('#template-article-link').innerHTML),
+  tagLink: Handlebars.compile(document.querySelector('#template-tag-link').innerHTML),
+  authorLink: Handlebars.compile(document.querySelector('#template-author-link').innerHTML),
+  tagList: Handlebars.compile(document.querySelector('#template-tag-cloud-link').innerHTML)
+};
+
+
 const opts = {
   articleSelector: '.post',
   titleSelector: '.post-title',
@@ -53,7 +61,13 @@ function generateTitleLinks(customSelector = ''){
     const articleTitle = article.querySelector(opts.titleSelector).innerHTML;
     /*  [DONE]  get the title from the title element */
     /*  [DONE]  create HTML of the link */
-    const linkHTML = '<li><a href = "#' + articleId + '"><span>' + articleTitle + '</span></a></li>';
+    //const linkHTML = '<li><a href = "#' + articleId + '"><span>' + articleTitle + '</span></a></li>';
+
+    //{{{{{{{Handlebars - dla linka do artykułu, umieszczanego w lewej kolumnie}}}}}}}//
+
+    const linkHTMLData = {id: articleId, title: articleTitle};
+    const linkHTML = templates.articleLink(linkHTMLData);
+
     /*  [DONE]  insert link into titleList */
     //titleList.innerHTML = titleList.innerHTML + linkHTML;
     //titleList.insertAdjacentHTML("beforeend", linkHTML );
@@ -120,7 +134,15 @@ function generateTags(){
     /* START LOOP: for each tag */
     for (let tag of articleTagsArray) {
       /* generate HTML of the link */
-      const tagHTML = '<li><a href="#tag-' + tag + '">' + tag + '</a></li>';
+      //const tagHTML = '<li><a href="#tag-' + tag + '">' + tag + '</a></li>';
+
+      //{{{{{{{Handlebars - dla linka do tagu, umieszczanego na końcu każdego artykułu}}}}}}}//
+
+      const tagHTMLElement = 'tag-' + tag;
+
+      const tagHTMLData = {id: tagHTMLElement, title: tag};
+      const tagHTML = templates.articleLink(tagHTMLData);
+
       /* add generated code to html variable */
       html = html + tagHTML + ' ';
       /* [NEW] check if this link is NOT already in allTags */
@@ -147,25 +169,29 @@ function generateTags(){
   const tagsParams = calculateTagsParams(allTags);
   console.log('tagsParams: ', tagsParams);
   /* [NEW] create variable for all links HTML code */
-  let allTagsHTML = '';
+  //let allTagsHTML = '';
+
+  const allTagsData = {tags: []};
+
   /* [NEW] START LOOP: for each tag in allTags: */
   for(let tag in allTags){
-    /* [NEW] generate code of a link and add it to allTagsHTML */
-    const tagLinkHTML = calculateTagsClass(allTags[tag], tagsParams);
-    console.log('tagLinkHTML:', tagLinkHTML);
 
-    allTagsHTML += '<li><a class="' + tagLinkHTML + '" href="#tag-' + tag + '">' + tag + '</a></li>';
 
-    /* [NEW] END LOOP: for each tag in allTags: */
+    allTagsData.tags.push({
+      tag: tag,
+      count: allTags[tag],
+      className: calculateTagsClass(allTags[tag], tagsParams)
+    });
+
   }
-  /*[NEW] add HTML from allTagsHTML to tagList */
-  tagList.innerHTML = allTagsHTML;
+
+  tagList.innerHTML = templates.tagCloudLink(allTagsData);
 
 
-  console.log(allTags);
+  console.log('all tags data: ' + allTagsData);
 
   console.log('all tags: ' + allTags);
-  console.log('tag2: ' + allTagsHTML);
+  //console.log('tag2: ' + allTagsHTML);
 }
 
 generateTags();
@@ -229,7 +255,15 @@ function generateAuthors() {
     const authorWrapper = article.querySelector(opts.articleAuthorSelector);
     let html = '';
     const authorName = article.getAttribute('data-author');
-    const authorHTML = '<a href="#author-' + authorName + '">' + authorName + '</a>';
+    //const authorHTML = '<a href="#author-' + authorName + '">' + authorName + '</a>';
+
+    //{{{{{{{Handlebars - dla linka do autora, umieszczanego pod tytułem każdego artykułu}}}}}}}//
+
+    const authorHTMLElement = 'author-' + authorName;
+
+    const authorHTMLData = {id: authorHTMLElement, title: authorName};
+    const authorHTML = templates.articleLink(authorHTMLData);
+
     html = html + authorHTML;
     console.log('author html 1: ' + html);
     authorWrapper.innerHTML = html;
