@@ -4,7 +4,8 @@ const templates = {
   articleLink: Handlebars.compile(document.querySelector('#template-article-link').innerHTML),
   tagLink: Handlebars.compile(document.querySelector('#template-tag-link').innerHTML),
   authorLink: Handlebars.compile(document.querySelector('#template-author-link').innerHTML),
-  tagList: Handlebars.compile(document.querySelector('#template-tag-cloud-link').innerHTML)
+  tagCloudLink: Handlebars.compile(document.querySelector('#template-tag-cloud-link').innerHTML),
+  authorsCloudLink: Handlebars.compile(document.querySelector('#template-authors-cloud-link').innerHTML),
 };
 
 
@@ -171,6 +172,8 @@ function generateTags(){
   /* [NEW] create variable for all links HTML code */
   //let allTagsHTML = '';
 
+  //{{{{{{{Handlebars - dla linka do tagu, umieszczanego w chmurze tagów w prawej kolumnie,}}}}}}}//
+
   const allTagsData = {tags: []};
 
   /* [NEW] START LOOP: for each tag in allTags: */
@@ -187,11 +190,8 @@ function generateTags(){
 
   tagList.innerHTML = templates.tagCloudLink(allTagsData);
 
-
   console.log('all tags data: ' + allTagsData);
 
-  console.log('all tags: ' + allTags);
-  //console.log('tag2: ' + allTagsHTML);
 }
 
 generateTags();
@@ -277,21 +277,29 @@ function generateAuthors() {
   console.log(allAuthors);
 
   /* [NEW] create variable for all links HTML code */
-  let allAuthorsHTML = '';
+  let allAuthorsData = {authors: []};
+
   let ulAuthors = document.querySelector(opts.authorsListSelector);
   /* [NEW] START LOOP: for each tag in allTags: */
   for(let author in allAuthors){
     /* [NEW] generate code of a link and add it to allTagsHTML */
-    allAuthorsHTML += '<li><a href="#author-' + author + '">' + author + '(' + allAuthors[author] + ') </a></li>';
+    //allAuthorsHTML += '<li><a href="#author-' + author + '">' + author + '(' + allAuthors[author] + ') </a></li>';
+
+    //{{{{{{{Handlebars - dla linka do autora, umieszczanego na liście w prawej kolumnie}}}}}}}//
+
+    allAuthorsData.authors.push({
+      author: author,
+      count: allAuthors[author],
+    });
+
   }
   /* [NEW] END LOOP: for each tag in allTags: */
 
   /*[NEW] add HTML from allTagsHTML to tagList */
 
-  console.log('Authors html: ' + allAuthorsHTML);
+  ulAuthors.innerHTML = templates.authorsCloudLink(allAuthorsData);
+  console.log('authors data: ' + allAuthorsData);
 
-  ulAuthors.innerHTML = allAuthorsHTML;
-  //ulAuthors.innerHTML = '<p>kotek</p>';
 }
 generateAuthors();
 
